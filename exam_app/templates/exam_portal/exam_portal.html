@@ -1,78 +1,163 @@
-{% extends "base.html" %}
-{% load static %}
-
+{% extends "base.html" %} 
+{% load static %} 
+<style>
+  .button-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 20px;
+    margin-bottom: 20px;
+}
+</style>
 {% block body %}
-
 {% block content %}
-
 <div class="row" id="r1">
-<div class="col-md-9">
-<div class="container" id="b1">
-
-<div class="tab">
+  <div class="col-md-9">
+    <div class="container" id="b1">
+      <div class="tab">
+        {% for key,value in questions.items %}
+        <button class="tablinks" onclick="openTab(event, '{{key}}')" {% if forloop.first %}id="defaultOpen"{% endif %}>{{key}}</button>
+        {% endfor %}
+        <button id="demo"></button>
+    </div>
+    
+    
+      
     {% for key,value in questions.items %}
-    <button class="tablinks" onclick="openCity(event, '{{key}}')" {% if forloop.first %}id="defaultOpen"{% endif %}>{{key}}</button>
-    {% endfor %}
-    <button id="demo"></button>
-</div>
-
-
-  
-  {% for key,value in questions.items %}
-  <div id="{{key}}" class="tabcontent">
-    <h3>{{key}}</h3>
-    <div class="card" id = "ques_card">
-      {% for i in value %}
-      <div class="card-body">
-          
-        <p>{{i.0}}</p>
-        <input type="radio" id="option1" name="{{i.0}}" value="{{i.1}}">
-        <label for="option1">{{i.1}}</label><br>
-        <input type="radio" id="option2" name="{{i.0}}" value="{{i.2}}">
-        <label for="option2">{{i.2}}</label><br>
-        <input type="radio" id="option3" name="{{i.0}}" value="{{i.3}}">
-        <label for="option3">{{i.3}}</label><br>
-        <input type="radio" id="option4" name="{{i.0}}" value="{{i.4}}">
-        <label for="option4">{{i.4}}</label>
-
+    <div id="{{key}}" class="tabcontent">
+      <h3>{{key}}</h3>
+      <div class="card" id="ques_card">
+        {% for i,j in value.items %}
+        <div class="card-body" id="card-body-{{ forloop.counter }}">
+            <p>{{i}}</p>
+            <input type="radio" id="option1" name="{{i}}" value="{{j.0}}">
+            <label for="option1">{{j.0}}</label><br>
+            <input type="radio" id="option2" name="{{i}}" value="{{j.1}}">
+            <label for="option2">{{j.1}}</label><br>
+            <input type="radio" id="option3" name="{{i}}" value="{{j.2}}">
+            <label for="option3">{{j.2}}</label><br>
+            <input type="radio" id="option4" name="{{i}}" value="{{j.3}}">
+            <label for="option4">{{j.3}}</label>
+            <div style="height: 100px;"></div>
+            <div class="button-container">
+            {% if forloop.first %}
+            <button class="btn btn-primary" onclick="openTab(event, '{{ key }}', {{ forloop.counter|add:1 }})">Next</button>
+            {% elif forloop.last %}
+            <button class="btn btn-primary" onclick="openTab(event, '{{ key }}', {{ forloop.counter|add:-1 }})">Previous</button>
+            {% else %}
+            <button class="btn btn-primary" onclick="openTab(event, '{{ key }}', {{ forloop.counter|add:-1 }})">Previous</button>
+            <button class="btn btn-primary" onclick="openTab(event, '{{ key }}', {{ forloop.counter|add:1 }})">Next</button>
+            {% endif %}
+            </div>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
-  </div>
-  </div>
-  {% endfor %}
-
-  
-</div>
-</div>
-<div class="col-md-3">
+    </div>
+    {% endfor %}
+    
+    
+      
+    </div>
+    </div>
+  <div class="col-md-3">
     <div class="row" id="r2">
-      <img src="{% url 'videostream' stream_path='video' %}" class="center">
+      <img src="{% url 'videostream' stream_path='video' %}" class="center" />
     </div>
     <div class="row" id="r3">
       <h6>Welcome {{ request.session.username }}</h6>
       <h3>Instructions</h3>
-        <ul>
-          <li>You must use a functioning webcam and microphone</li>
-          <li>No cell phones or other secondary devices in the room or test area</li>
-          <li>No one else can be in the room with you</li>
-          <li>No talking </li>
-          <li>The testing room must be well-lit and you must be clearly visible</li>
-          <li>No dual screens/monitors</li>
-          <li>Do not leave the camera </li>
-          <li>No use of additional applications or internet</li>
-        </ul>
+      <ul>
+        <li>You must use a functioning webcam and microphone</li>
+        <li>
+          No cell phones or other secondary devices in the room or test area
+        </li>
+        <li>No one else can be in the room with you</li>
+        <li>No talking</li>
+        <li>
+          The testing room must be well-lit and you must be clearly visible
+        </li>
+        <li>No dual screens/monitors</li>
+        <li>Do not leave the camera</li>
+        <li>No use of additional applications or internet</li>
+      </ul>
     </div>
     <div class="row" id="r4">
-        <a href="{% url 'submission' %}" style="color:black;"><button class="btn-primary">Get Result</button></a>
+      <button class="btn btn-primary" onclick="submitForm()">Submit</button>
     </div>
+  </div>
 </div>
-</div>
-
-{% endblock content %}
-
+{% endblock %} 
 {% block scripts %}
 <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
-{% endblock scripts %}
+<script type="text/javascript">
+
+  function openTab(evt, tabName, questionIndex) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+    
+    if (questionIndex === undefined) {
+      questionIndex = 1;
+    }
+    
+    var questionCards = document.querySelectorAll("#" + tabName + " .card-body");
+    for (i = 0; i < questionCards.length; i++) {
+      questionCards[i].style.display = "none";
+    }
+    questionCards[questionIndex - 1].style.display = "block";
+    
+    var prevBtn = document.getElementById("prevBtn");
+    var nextBtn = document.getElementById("nextBtn");
+    
+    if (questionIndex == 1) {
+      prevBtn.style.display = "none";
+    } else {
+      prevBtn.style.display = "inline";
+    }
+    
+    if (questionIndex == questionCards.length) {
+      nextBtn.style.display = "none";
+    } else {
+      nextBtn.style.display = "inline";
+    }
+  }
+  
+  document.getElementById("defaultOpen").click();
+  
+  var prevBtn = document.getElementById("prevBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  prevBtn.style.display = "none";
+  nextBtn.style.display = "inline";
+  
+  prevBtn.addEventListener("click", function() {
+    var currentTab = document.getElementsByClassName("active")[0];
+    var currentQuestionIndex = parseInt(currentTab.getAttribute("data-question-index"));
+    var prevQuestionIndex = currentQuestionIndex - 1;
+    var tabName = currentTab.getAttribute("data-tab-name");
+    openTab(evt, tabName, prevQuestionIndex);
+  });
+  
+  nextBtn.addEventListener("click", function() {
+    var currentTab = document.getElementsByClassName("active")[0];
+    var currentQuestionIndex = parseInt(currentTab.getAttribute("data-question-index"));
+    var nextQuestionIndex = currentQuestionIndex + 1;
+    var tabName = currentTab.getAttribute("data-tab-name");
+    openTab(evt, tabName, nextQuestionIndex);
+  });
 
 
+
+</script>
+
+
+{% endblock scripts %} 
 {% endblock body %}

@@ -514,30 +514,28 @@ def activate_quest(request, id):
         cursor.close()
 
 def exam_portal(request):
-    if request.session.get('user_authenticated'):
+    # if request.session.get('user_authenticated'):
         try:
             cursor = connection.cursor()
-            cursor.execute('exec getExamQuestion %s,%s', [2,2])
+            cursor.execute('exec getExamQuestion %s,%s', ["Developer",2])
             my_list = cursor.fetchall()
-            print(my_list)
-            questions = {}
-            i=1
+            # print(my_list)
+            my_dict = {}
             for tup in my_list:
-                key = tup[0]
-                values = list(tup[1:])
-                values.append(i)
-                i = i+1
-                if key in questions:
-                    questions[key].append(values)
+                key1, key2 = tup[0], tup[1]
+                values = list(tup[2:])
+                
+                if key1 in my_dict:
+                    my_dict[key1][key2] = values
                 else:
-                    questions[key] = [values]
+                    my_dict[key1] = {key2: values}
 
-            print(questions)
-            return render(request,"exam_portal/exam_portal.html",{'questions':questions})
+            print(my_dict)
+            return render(request,"exam_portal/exam_portal.html",{'questions':my_dict})
         finally:
             cursor.close()
 
-    return redirect('login')
+    # return redirect('login')
     
 
 def registration(request):
@@ -664,15 +662,15 @@ def login(request):
             print(user)
             if user:
                 # If the user is valid and password is correct                
-                if user[2] == password and user[3] == True:
-                    user_name = user[4]
+                if user[3] == password and user[4] == True:
+                    user_name = user[5]
                     request.session['username'] = user_name                    
                     request.session['user_authenticated'] = True                    
                     return redirect('dashboard')
                 
                 # If the user is valid but password is incorrect                
-                elif user[2] == password and user[3] == False:
-                    user_name = user[4]
+                elif user[3] == password and user[4] == False:
+                    user_name = user[5]
                     request.session['username'] = user_name                    
                     request.session['user_authenticated'] = True                    
                     return redirect('/exam_portal')
@@ -701,61 +699,114 @@ def submission(request):
     return render(request, 'dashboard/exam_submission.html')
 
 
-def gen():
-    """Video streaming generator function."""
+# def gen():
+#     """Video streaming generator function."""
 
+#     cap = cv2.VideoCapture(0)
+
+#     # Detect the coordinates
+#     detector = dlib.get_frontal_face_detector()
+#     img_counter = 0
+
+#     # Capture frames continuously
+#     while True:
+
+#         # Capture frame-by-frame
+#         ret, frame = cap.read()
+#         frame = cv2.flip(frame, 1)
+
+#         # RGB to grayscale
+#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#         faces = detector(gray)
+
+#         # Iterator to count faces
+#         i = 0
+#         for face in faces:
+
+#             # Get the coordinates of faces
+#             x, y = face.left(), face.top()
+#             x1, y1 = face.right(), face.bottom()
+#             cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 2)
+
+#             # Increment iterator for each face in faces
+#             i = i+1
+
+#             # Display the box and faces
+#             cv2.putText(frame, ' '+str(i), (x-10, y-10),
+#                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)    
+        
+#         if i > 1:
+#             now = datetime.datetime.now()
+#             p = os.path.sep.join(['img', "More than one face detected{}.png".format(str(now).replace(":",''))])
+#             # data.append("More than one face detected.")
+#             cv2.imwrite(p, frame)
+#             img_counter += 1
+
+#         if i == 0:
+#             now = datetime.datetime.now()
+#             p = os.path.sep.join(['img', "No face detected{}.png".format(str(now).replace(":",''))])
+#             # data.append("No face detected.")
+#             cv2.imwrite(p, frame)
+#             img_counter += 1
+
+#         frame = cv2.resize(frame, (0,0), fx=0.5, fy=0.5) 
+#         ret, buffer = cv2.imencode('.jpg', frame)
+#         frame = buffer.tobytes()
+#         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                  
+
+# Load the Haar Cascade classifier
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+def gen():
+
+    # Open the camera
     cap = cv2.VideoCapture(0)
 
-    # Detect the coordinates
-    detector = dlib.get_frontal_face_detector()
+    # Initialize image counter
     img_counter = 0
 
-    # Capture frames continuously
     while True:
 
-        # Capture frame-by-frame
+        # Read a frame from the camera
         ret, frame = cap.read()
         frame = cv2.flip(frame, 1)
 
-        # RGB to grayscale
+        # Convert to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = detector(gray)
 
-        # Iterator to count faces
-        i = 0
-        for face in faces:
+        # Detect faces in the frame
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-            # Get the coordinates of faces
-            x, y = face.left(), face.top()
-            x1, y1 = face.right(), face.bottom()
-            cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 2)
+        # Draw a rectangle around each detected face
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-            # Increment iterator for each face in faces
-            i = i+1
+        # Display the number of faces detected
+        cv2.putText(frame, ' ' + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-            # Display the box and faces
-            cv2.putText(frame, ' '+str(i), (x-10, y-10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)    
-        
-        # if i > 1:
-        #     now = datetime.datetime.now()
-        #     p = os.path.sep.join(['img', "More than one face detected{}.png".format(str(now).replace(":",''))])
-        #     # data.append("More than one face detected.")
-        #     cv2.imwrite(p, frame)
-        #     img_counter += 1
+        if len(faces) > 1:
+            now = datetime.datetime.now()
+            p = os.path.sep.join(['img', "More than one face detected{}.png".format(str(now).replace(":",''))])
+            cv2.imwrite(p, frame)
+            img_counter += 1
 
-        # if i == 0:
-        #     now = datetime.datetime.now()
-        #     p = os.path.sep.join(['img', "No face detected{}.png".format(str(now).replace(":",''))])
-        #     # data.append("No face detected.")
-        #     cv2.imwrite(p, frame)
-        #     img_counter += 1
+        if len(faces) == 0:
+            now = datetime.datetime.now()
+            p = os.path.sep.join(['img', "No face detected{}.png".format(str(now).replace(":",''))])
+            cv2.imwrite(p, frame)
+            img_counter += 1
 
-        frame = cv2.resize(frame, (0,0), fx=0.5, fy=0.5) 
+        # Resize and encode the frame
+        frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
-        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-                  
+
+        # Yield the frame to the calling function
+        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+
 
 @gzip.gzip_page
 def dynamic_stream(request,stream_path="video"):
