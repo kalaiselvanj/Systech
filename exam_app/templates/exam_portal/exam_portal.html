@@ -31,13 +31,13 @@
         {% for i,j in value.items %}
         <div class="card-body" id="card-body-{{ forloop.counter }}">
             <p>{{i}}</p>
-            <input type="radio" id="option1" name="{{i}}" value="{{j.0}}">
+            <input type="radio" id="option1" name="{{j.4}}${{j.5}}${{user_id}}" value="{{j.0}}" onclick="submitAnswer('{{j.0}}')">
             <label for="option1">{{j.0}}</label><br>
-            <input type="radio" id="option2" name="{{i}}" value="{{j.1}}">
+            <input type="radio" id="option2" name="{{j.4}}${{j.5}}${{user_id}}" value="{{j.1}}" onclick="submitAnswer('{{j.1}}')">
             <label for="option2">{{j.1}}</label><br>
-            <input type="radio" id="option3" name="{{i}}" value="{{j.2}}">
+            <input type="radio" id="option3" name="{{j.4}}${{j.5}}${{user_id}}" value="{{j.2}}" onclick="submitAnswer('{{j.2}}')">
             <label for="option3">{{j.2}}</label><br>
-            <input type="radio" id="option4" name="{{i}}" value="{{j.3}}">
+            <input type="radio" id="option4" name="{{j.4}}${{j.5}}${{user_id}}" value="{{j.3}}" onclick="submitAnswer('{{j.3}}')">
             <label for="option4">{{j.3}}</label>
             <div style="height: 100px;"></div>
             <div class="button-container">
@@ -49,6 +49,7 @@
             <button class="btn btn-primary" onclick="openTab(event, '{{ key }}', {{ forloop.counter|add:-1 }})">Previous</button>
             <button class="btn btn-primary" onclick="openTab(event, '{{ key }}', {{ forloop.counter|add:1 }})">Next</button>
             {% endif %}
+            <button class="btn btn-danger"  onclick="clearSelection('{{j.4}}${{j.5}}${{user_id}}')" style="float:right;">Clear Selection</button>
             </div>
         </div>
         {% endfor %}
@@ -82,14 +83,15 @@
         <li>No use of additional applications or internet</li>
       </ul>
     </div>
+    <div id="countdown" data-total-duration="{{ total_duration }}"><span id="countdown-timer"></span></div>
     <div class="row" id="r4">
-      <button class="btn btn-primary" onclick="submitForm()">Submit</button>
+      <a href="#" class="btn btn-primary" id="submit-button">Submit</a>
     </div>
   </div>
 </div>
 {% endblock %} 
 {% block scripts %}
-<script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+{% comment %} <script type="text/javascript" src="{% static 'js/app.js' %}"></script> {% endcomment %}
 <script type="text/javascript">
 
   function openTab(evt, tabName, questionIndex) {
@@ -153,9 +155,100 @@
     var tabName = currentTab.getAttribute("data-tab-name");
     openTab(evt, tabName, nextQuestionIndex);
   });
+</script>
+<script>
+  //countdown timer
+var countdownEl = document.getElementById('countdown');
+var totalDuration = countdownEl.dataset.totalDuration;
+var countDownDate = new Date().getTime() + (totalDuration *60* 1000);
 
+console.log(countDownDate)
 
+// Update the count down every 1 second
+var x = setInterval(function() {
 
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("demo").innerHTML = hours + ":"
+  + minutes + ":" + seconds + "";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+    alert("Your time is up. Please submit your answers.");
+    window.location.href = "{% url 'submission' %}?level={{level}}&applied_for={{appliedfor}}&user={{user_id}}";
+  }
+}, 1000);
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {% csrf_token %}
+  <script>
+    {% comment %} window.onbeforeunload = function () {return false;} {% endcomment %}
+    function submitAnswer(answerValue) {
+      var formData = {};
+      var radios = document.querySelectorAll("input[type=radio]");
+      for (var i = 0; i < radios.length; i++) {
+        var name = radios[i].name;
+        if (radios[i].checked) {
+          formData[name] = radios[i].value;
+        } 
+        else if (!formData.hasOwnProperty(name)) {
+          formData[name] = null;
+        }
+      }
+      $.ajax({
+        type: "POST",
+        url: '{% url "submit_answers" %}',
+        data: JSON.stringify(formData),
+        beforeSend: function(xhr, settings) {
+          xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        contentType: "application/json",
+        dataType: "json",
+        success: function(response) {
+        },
+        error: function(xhr, status, error) {
+          
+        },
+      });
+    }
+    
+  </script>
+  
+<script>
+function clearSelection(name) {
+var radios = document.getElementsByName(name);
+for (var i = 0; i < radios.length; i++) {
+    radios[i].checked = false;
+      }
+      submitAnswer();
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.requestFullscreen();
+  });
+</script>
+
+<script>
+  document.getElementById("submit-button").addEventListener("click", function() {
+    var confirmed = confirm("Are you sure you want to submit?");
+    if (confirmed) {
+      window.location.href = "{% url 'submission' %}?level={{level}}&applied_for={{appliedfor}}&user={{user_id}}";
+    }
+  });
 </script>
 
 

@@ -14,9 +14,9 @@
             border: 1px solid #ddd !important;
             background-color: white;
             }
-            .input-label.required:after {
-                content: " *";
-                color: red;
+            label.required::after {
+            content: "*";
+            color: red !important;
             }
             input, select {
             border: 1px solid #ddd !important;
@@ -62,7 +62,7 @@
             align-items: center !important;
             }
             .heading{
-            width:50% !important;
+            width:100% !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
@@ -106,6 +106,11 @@
             border-radius: 5px !important;
             border-top: 2px solid DodgerBlue !important;
             }
+            .container2 {
+            padding: 15px !important;
+            
+            
+            }
             .sub-heading {
             font-size: 16px !important;
             font-weight: 600 !important;
@@ -126,11 +131,11 @@
             margin: 20px 0 0 !important;
             }
             .country-code-ctr {
-            width: 80px !important;
+            width: 120px !important;
             margin-right: 5px !important;
             }
             .phone-number-ctr {
-            width: calc(100% - 85px) !important;
+            width: calc(100% - 125px) !important;
             }
             .col-md-4 {
             margin: 0 !important;
@@ -174,7 +179,7 @@
         </style>
     </head>
     <body>
-        <form method="POST" action="" onsubmit="return validatePhoneNumber()">
+        <form method="POST" action="" onsubmit="return ">
             {% csrf_token %}
             <div class="bg-container">
                 <div class="row">
@@ -194,9 +199,9 @@
                     <div class="container">
                         <div class="col-md-4">
                             <label class="input-label" for="Applyingfor">   
-                            Applying for
+                            Applying for<span style="color:red">*</span>
                             </label>  
-                            <select id="Applyingfor" name="Applyingfor" >
+                            <select id="Applyingfor" name="Applyingfor" required >
                                 <option value="" disabled selected hidden>Select option</option>
                                 {% for job in jobs %}             
                                 <option value="{{job.0}}|{{job.1}}">{{ job.1 }}</option>
@@ -210,17 +215,17 @@
                             <div  style="background:LightGray;">
                                 <div class="head">
                                     <div class="col-md-4">
-                                        <label class="input-label"  for="firstname"> First Name*
+                                        <label class="input-label"  for="firstname"> First Name<span style="color:red">*</span>
                                         </label>   
                                         <input type="text" name="firstname"  id="firstname" placeholder="First  Name " size="15"  required>
                                     </div>
                                     <div class="col-md-4"> 
-                                        <label class="input-label" for="lastname"> Last Name*
+                                        <label class="input-label" for="lastname"> Last Name<span style="color:red">*</span>
                                         </label>    
                                         <input type="text" name="lastname" id="lastname" placeholder=" Last  Name" size="15"  required  >
                                     </div>
                                     <div class="col-md-4 ">
-                                        <label class="input-label" for="email" > Email 
+                                        <label class="input-label" for="email" > Email<span style="color:red">*</span> 
                                         </label>      
                                         <input type="email" id="email" name="email" placeholder="Enter Email" size="15"   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required >
                                     </div>
@@ -228,7 +233,7 @@
                                 <div class="head">
                                     <div class="col-md-4">
                                         <label class="input-label" for="gender" >   
-                                        Gender :  
+                                        Gender<span style="color:red">*</span>
                                         </label>
                                         <select required name="gender"  id="gender"  >
                                             <option value="" disabled selected hidden>Select option</option>
@@ -241,19 +246,15 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="input-label" for="dob">Date Of Birth
-                                        </label>
-                                        <input type="Date" id="dob" name="dob"  size="15" required >
-                                    </div>
-                                    <!-- <div class="col-md-4">
-                                        <label class="input-label" for="dob">Date Of Birth</label>
-                                        <input type="date" id="dob" name="dob" size="15" onchange="checkAge(event)">
-                                        <span id="age-validation-message"></span>
-                                      </div> -->
+                                        <label class="input-label" for="dob">Date Of Birth<span style="color:red">*</span></label>
+                                        <input type="date" id="dob" name="dob" size="15"  onchange="checkAge(event)" required >
+                                        
+                                        <span id="age-validation-message" ></span>
+                                      </div> 
                                     
                                     <div class="col-md-4">
                                         <label class="input-label" for="MaritalStatus">   
-                                        Marital Status
+                                        Marital Status<span style="color:red">*</span>
                                         </label>
                                         <select  name="MaritalStatus" id="MaritalStatus"  required >
                                             <option value="" disabled selected hidden>Select option</option>
@@ -267,7 +268,7 @@
                                 <div class="head " >
                                     <div class="head2 col-md-4"   >
                                         <div class="country-code-ctr" >
-                                            <label class="input-label" for="country_code">Country code</label>
+                                            <label class="input-label" for="country_code">Country code<span style="color:red">*</span></label>
                                             <select name="country_code" id="country_code" required >
                                                 <option value="" disabled selected hidden>Select option</option>
                                                 {% for code, name,lable,phone_code in countries %}
@@ -276,17 +277,17 @@
                                             </select>
                                         </div>
                                         <div class="phone-number-ctr " >
-                                            <label class="input-label" for="phone">Phone number</label>
+                                            <label class="input-label" for="phone">Phone number<span style="color:red">*</span></label>
                                             <input type="tel" id="phone" name="phone" placeholder="Enter phone number" pattern = "[0-9]{10}"  title="Please enter a valid phone number with country code" required >
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="input-label" for="CAddress"> Current Address 
+                                        <label class="input-label" for="CAddress"> Current Address<span style="color:red">*</span> 
                                         </label>   
                                         <input type="text" name="CAddress" id="CAddress" placeholder="Address" size="15" required >
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="input-label" for="PAddress"> Permanent Address 
+                                        <label class="input-label" for="PAddress"> Permanent Address<span style="color:red">*</span>
                                         </label>   
                                         <input type="text" name="PAddress" id="PAddress" placeholder="Address" size="15" required  > 
                                     </div>
@@ -300,16 +301,18 @@
                         </h1>
                         <div class="head">
                             <div class="col-md-4">
-                                <label class="input-label" for="Institution10"> Institution 
+                                <label class="input-label" for="Institution10"> Institution<span style="color:red">*</span>
                                 </label>   
                                 <input type="text" name="Institution10" id="Institution10" placeholder="Institution" size="15" required >
                             </div>
                             <div class="col-md-4">
-                              <label class="input-label" for="CGPA10"> % (or) CGPA </label>   
-                              <input type="text" name="CGPA10" id="CGPA10" placeholder="Enter CGPA" size="15" maxlength="5" oninput="validateCGPA(this)"> 
+                                <label class="input-label" for="CGPA10"> % (or) CGPA<span style="color:red">*</span>
+                                </label>   
+                                <input type="text" name="CGPA10" id="CGPA10" placeholder="Enter CGPA" size="15" oninput="validateCGPA(this)" required > 
+                                
                             </div>
                             <div class="col-md-4" >
-                                <label class="input-label" for="YOP10"> Year of passing 
+                                <label class="input-label" for="YOP10"> Year of passing<span style="color:red">*</span>
                                 </label>    
                                 <select name="YOP10"  id="YOP10" placeholder="Enter YOP"  required>
                                     <option value="" disabled selected hidden>Select option</option>
@@ -317,28 +320,36 @@
                                     <option value="{{ year }}">{{ year }}</option>
                                     {% endfor %}
                                 </select>
+                                <span class="validation-message"></span>
                             </div>
                         </div>
                         <h1 class="garduation-heading">12th or Diploma
                         </h1>
                         <div class="head">
                             <div  class="col-md-3">
-                                <label class="input-label" for="Institution12"> Institution 
+                                <label class="input-label" for="Institution12"> Institution<span style="color:red">*</span> 
                                 </label>   
                                 <input type="text" name="Institution12" id="Institution12" placeholder="Institution" size="15" required >
                             </div>
                             <div class="col-md-3">
-                                <label class="input-label" for="CGPA12"> % (or) CGPA
+                                <label class="input-label" for="CGPA12"> % (or) CGPA<span style="color:red">*</span>
                                 </label>   
-                                <input type="text" name="CGPA12" id="CGPA12" placeholder="Enter CGPA" size="15" required > 
+                                <input type="text" name="CGPA12" id="CGPA12" placeholder="Enter CGPA" size="15" oninput="validateCGPA(this)" required  > 
+                                <span class="validation-message"></span>
                             </div>
                             <div class="col-md-3"> 
-                                <label class="input-label" for="YOP12"> Year of passing 
+                                <label class="input-label" for="YOP12"> Year of passing<span style="color:red">*</span>
                                 </label>    
-                                <input type="text" name="YOP12" id="YOP12" placeholder="Enter YOD" size="15"  required >
+                                <select name="YOP12"  id="YOP12" placeholder="Enter YOP" onchange="validateForm(event)" required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span id="year-validation-message"></span>
                             </div>
                             <div class="col-md-3"> 
-                                <label class="input-label" for="Branch12"> Branch
+                                <label class="input-label" for="Branch12"> Branch<span style="color:red">*</span>
                                 </label>    
                                 <input type="text" name="Branch12" id="Branch12" placeholder="Enter Branch" size="15" required>
                             </div>
@@ -347,7 +358,7 @@
                         </h1>
                         <div class="head">
                             <div class="col-md-row-5">
-                                <label class="input-label" for="Graduation"> UG Graduation
+                                <label class="input-label" for="Graduation"> UG Graduation<span style="color:red">*</span>
                                 </label>   
                                 <select  name="Graduation" id="Graduation"  required>
                                     <option value="" disabled selected hidden>Select option</option>
@@ -358,7 +369,7 @@
                                 </select>
                             </div>
                             <div  class="col-md-row-5">
-                                <label class="input-label" for="UGDiscipline"> UG Discipline
+                                <label class="input-label" for="UGDiscipline"> UG Discipline<span style="color:red">*</span>
                                 </label>   
                                 <select  name="UGDiscipline"  id="UGDiscipline"  required>
                                     <option value="" disabled selected hidden>Select option</option>
@@ -369,19 +380,27 @@
                                 </select>
                             </div>
                             <div  class="col-md-row-5"> 
-                                <label class="input-label" for="UGCollege"> College
+                                <label class="input-label" for="UGCollege"> College<span style="color:red">*</span>
                                 </label>    
                                 <input type="text" name="UGCollege" id="UGCollege" placeholder="Enter College" size="15" required >
                             </div>
                             <div  class="col-md-row-5"> 
-                                <label class="input-label" for="CGPAUG"> % (or) CGPA
+                                <label class="input-label" for="CGPAUG"> % (or) CGPA<span style="color:red">*</span>
                                 </label>    
-                                <input type="text" name="CGPAUG" id="CGPAUG" placeholder="Enter % (or) CGPA" size="15" required >
+                                <input type="text" name="CGPAUG" id="CGPAUG" placeholder="Enter % (or) CGPA" size="15" oninput="validateCGPA(this)" required  >
+                                <span class="validation-message"></span>
                             </div>
                             <div  class="col-md-row-5"> 
-                                <label class="input-label" for="YOPUG"> Year of passing 
+                                <label class="input-label" for="YOPUG"> Year of passing<span style="color:red">*</span>
                                 </label>    
-                                <input type="text" name="YOPUG" id="YOPUG" placeholder="Enter YOD" size="15" required  >
+                                <select name="YOPUG"  id="YOPUG" placeholder="Enter YOP" onchange="validateForm_2(event)" required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span id="byear-validation-message"></span>
+                                
                             </div>
                         </div>
                         <h1 class="garduation-heading">Post Graduation
@@ -390,7 +409,7 @@
                             <div  class="col-md-row-5">
                                 <label class="input-label" for="PGraduation"> PG Graduation
                                 </label>   
-                                <select  name="PGraduation"   id="PGraduation" required >
+                                <select  name="PGraduation"   id="PGraduation" >
                                     <option value="" disabled selected hidden>Select option</option>
                                     {% for degree in pg %}
                                     <option value="{{degree.1}}" >{{degree.1}}
@@ -401,7 +420,7 @@
                             <div  class="col-md-row-5">
                                 <label class="input-label" for="PGDiscipline"> PG Discipline
                                 </label>   
-                                <select  name="PGDiscipline" id="PGDiscipline" required >
+                                <select  name="PGDiscipline" id="PGDiscipline"  >
                                     <option value="" disabled selected hidden>Select option</option>
                                     {% for i in branch %}
                                     <option value="{{i.1}}" >{{i.1}}
@@ -412,17 +431,24 @@
                             <div  class="col-md-row-5"> 
                                 <label class="input-label" for="PGCollege"> College
                                 </label>    
-                                <input type="text" name="PGCollege" id="PGCollege" placeholder="Enter College" size="15" required >
+                                <input type="text" name="PGCollege" id="PGCollege" placeholder="Enter College" size="15"  >
                             </div>
                             <div  class="col-md-row-5"> 
                                 <label class="input-label" for="CGPAPG"> % (or) CGPA
                                 </label>    
-                                <input type="text" name="CGPAPG" id="CGPAPG" placeholder="Enter % (or) CGPA" size="15" required >
+                                <input type="text" name="CGPAPG" id="CGPAPG" placeholder="Enter % (or) CGPA" size="15" oninput="validateCGPA(this)"  >
+                                <span class="validation-message"></span>
                             </div>
                             <div  class="col-md-row-5"> 
                                 <label class="input-label" for="YOPPG"> Year of passing 
                                 </label>    
-                                <input type="text" name="YOPPG" id="YOPPG" placeholder="Enter YOD" size="15" required>
+                                <select name="YOPPG"  id="YOPPG" placeholder="Enter YOP" onchange="validateForm_3(event)" required>
+                                    <option value="" disabled selected hidden>Select option</option>
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span id="pyear-validation-message"></span>
                             </div>
                         </div>
                     </div>
@@ -431,7 +457,7 @@
                         <div class="head">
                             <div class="col-md-3">
                                 <label class="input-label mt-0" name='Source' >   
-                                Source
+                                Source<span style="color:red">*</span>
                                 </label>
                                 <div>
                                     <select  name="Source" id="Source" required  >
@@ -440,16 +466,18 @@
                                         </option>
                                         <option value="Reference">Reference
                                         </option>
+                                        <option value="Reference">Advertisements 
+                                        </option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-3" >
-                                <label class="input-label mt-0" name="Referredthrough"> Referred through
+                                <label class="input-label mt-0" name="Referredthrough"> Referred through<span style="color:red">*</span>
                                 </label>   
                                 <input type="text" name="Referredthrough" id="Referredthrough" placeholder="Name (or) Emp-Id " size="15" required > 
                             </div>
                             <div class="col-md-3">
-                                <label class="input-label mt-0" name="Applied"> Is Applied? 
+                                <label class="input-label mt-0" name="Applied"> Is Applied?<span style="color:red">*</span> 
                                 </label>    
                                 <div>
                                     <select  name="Applied" id="Applied" required >
@@ -461,10 +489,16 @@
                                     </select>
                                 </div>
                             </div>
-                            <div id="date-container" class="col-md-3">
+                            <div class="col-md-3" id="date-container" style="display:none";>
+                                <label class="input-label mt-0" for="Adate">Date:</label>
+                                <input type="date" id="Adate" name="Adate">
+                                <span id="date-validation-message" style="color:red;"></span>
+                              </div>
+                            <!-- <div id="date-container" class="col-md-3" style="display:none">
                                 <label class="input-label mt-0" for="Adate">Date:</label>
                                 <input  type="date" id="Adate" name="Adate"  >
-                            </div>
+                            </div>  
+                            -->
                         </div>
                     </div>
                     <div class="sub-heading">ID_Proof_Details</div>
@@ -502,8 +536,8 @@
                         </div>
                     </div>
                     </div>
-                    <div class="row" style="text-align: center; margin-top: 20px">
-                        <button type="submit" id="reg_sub" style="background-color: blue; width: 100px; height: 40px; border-radius: 10px; color: white; font-weight: bold; border: none; text-shadow: 1px 1px 1px #333;;">Submit</button>
+                    <div class="container2" style="text-align: center;margin-top: 20px">
+                        <button type="submit" id="reg_sub" style="background-color: blue; width: 100px; height: 20px; border-radius: 10px; color: white; font-weight: bold; border: none; text-shadow: 1px 1px 1px #333;;">Submit</button>
                         </button>
                     </div>
                 </div>
@@ -523,7 +557,7 @@
         dateContainer.style.display = "none";
       }
     });
-
+      
     const idProofDropdown = document.getElementById("Id_proof");
     const idNoInputContainer = document.getElementById("idNoInputContainer");
     const idNoInput = document.getElementById("ID_NO");
@@ -577,7 +611,7 @@
     const isValid = regex.test(value);
     idNoInput.setCustomValidity(isValid ? "" : "Enter a valid ID number");
     });
-
+    
     
     // Get the data from sessionStorage
     var CardimageData = sessionStorage.getItem('CardimageData');
@@ -631,48 +665,71 @@
         }
     });
     function checkAge(event) {
-    var dob = new Date(document.getElementById("dob").value);
-    var ageDiffMs = Date.now() - dob.getTime();
-    var ageDate = new Date(ageDiffMs);
-    var age = Math.abs(ageDate.getUTCFullYear() - 1970);
+    var inputDate = new Date(event.target.value);
+    var today = new Date();
+    var age = today.getFullYear() - inputDate.getFullYear();
+    var monthDiff = today.getMonth() - inputDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < inputDate.getDate())) {
+      age--;
+    }
 
     if (age < 18) {
-        document.getElementById("age-validation-message").innerHTML = "You must be at least 18 years old to register.";
-        event.preventDefault();
+      document.getElementById("age-validation-message").innerHTML = "You must be at least 18 years old.";
+      event.target.setCustomValidity("You must be at least 18 years old.");
     } else {
-        document.getElementById("age-validation-message").innerHTML = "";
+      document.getElementById("age-validation-message").innerHTML = "";
+      event.target.setCustomValidity("");
     }
     }
+    function validateForm(event) {
+			var yop10Input = document.getElementById("YOP10");
+			var yop12Input = event.target;
+			var yop10Value = yop10Input.value;
+			var yop12Value = yop12Input.value;
+			if (yop12Value < parseInt(yop10Value) + 2) {
+                    document.getElementById("year-validation-message").innerHTML = "Enter the year greater than 10th by 2 years";
+                    yop12Input.setCustomValidity("Year of passing should be greater than Year of passing 10th by 2 years");
+                } else {
+                    document.getElementById("year-validation-message").innerHTML = "";
+                    yop12Input.setCustomValidity("");
+            }
 
+	}
+    function validateForm_2(event) {
+        var yop12Input = document.getElementById("YOP12");
+        var yopUGInput = event.target;
+        var yop12Value = yop12Input.value;
+        var yopUGValue = yopUGInput.value;
+        if (yopUGValue < parseInt(yop12Value) + 3) {
+                document.getElementById("byear-validation-message").innerHTML = "Enter the year greater than 12th by 3 years";
+                yop12Input.setCustomValidity("Year of passing should be greater than Year of passing 12th by 3 years");
+            } else {
+                document.getElementById("byear-validation-message").innerHTML = "";
+                yop12Input.setCustomValidity("");
+        }
 
-    const dateField = document.getElementById("Adate"); // replace "Adate" with the actual ID of your input field
-
-    // get the current date and subtract 60 days from it
-    const minDate = new Date();
-    minDate.setDate(minDate.getDate() - 60);
-
-    // set the minimum date allowed in the input field
-    dateField.min = minDate.toISOString().split("T")[0]; // convert the date to the format required by the input field
-
-    // add an event listener to the input field
-    dateField.addEventListener("input", function() {
-    const selectedDate = new Date(dateField.value);
-    if (selectedDate < minDate) {
-        alert("Please select a date that is not earlier than 60 days before today.");
-        dateField.value = ""; // clear the input field
     }
-    });
+    function validateForm_3(event) {
+        var yopUGInput = document.getElementById("YOPUG");
+        var yopPGInput = event.target;
+        var yopUGValue = yopUGInput.value;
+        var yopPGValue = yopPGInput.value;
+        if (yopPGValue < parseInt(yopUGValue) + 2) {
+                document.getElementById("pyear-validation-message").innerHTML = "Enter the year greater than UG by 2 years";
+                yop12Input.setCustomValidity("Year of passing should be greater than Year of passing UG by 2 years");
+            } else {
+                document.getElementById("pyear-validation-message").innerHTML = "";
+                yop12Input.setCustomValidity("");
+        }
 
+    }
+    function validateCGPA(input) {
+        const value = input.value;
+        const regex = /^(100|\d{1,2}(\.\d{1,2})?)$/;
+        const isValid = regex.test(value);
+        input.setCustomValidity(isValid ? "" : "Enter a valid number between 0 and 100");
+        }
+        
 
-
-    
-</script>
-
-<script>
-function validateCGPA(input) {
-  const value = input.value;
-  const regex = /^(100|\d{1,2}(\.\d{1,2})?)$/;
-  const isValid = regex.test(value);
-  input.setCustomValidity(isValid ? "" : "Enter a valid number between 0 and 100");
-}
 </script>

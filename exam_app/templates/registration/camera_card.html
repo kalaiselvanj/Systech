@@ -128,9 +128,7 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-secondary me-5" onclick="history.back()">
-        Back
-      </button>
+  
     </div>
 
       
@@ -221,6 +219,8 @@
 
             // Store image data in session storage
             sessionStorage.setItem('CardimageData', dataURL);
+
+            history.back()
 
             
         });
