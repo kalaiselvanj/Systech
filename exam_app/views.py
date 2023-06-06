@@ -16,11 +16,10 @@ import asyncio
 import threading
 import argparse
 import datetime
-import pyaudio
+# import pyaudio
 import imutils
 import wave
 import time
-import pyaudio
 import numpy as np
 import math
 import wave
@@ -1146,97 +1145,97 @@ def result(request):
 
 ############################################AUDIO################################################
 # Set chunk size (number of frames per buffer)
-CHUNK = 1024
+# CHUNK = 1024
 
-# Set sample format
-FORMAT = pyaudio.paInt16
+# # Set sample format
+# # FORMAT = pyaudio.paInt16
 
-# Set channels
-CHANNELS = 1
+# # Set channels
+# CHANNELS = 1
 
-# Set sample rate
-RATE = 44100
+# # Set sample rate
+# RATE = 44100
 
-is_recording = True
+# is_recording = True
 
-# Create empty list to store audio data
-frames = []
+# # Create empty list to store audio data
+# frames = []
 
 
 
 # Initialize PyAudio object
-p = pyaudio.PyAudio()
+# p = pyaudio.PyAudio()
 
-# Define a function to start recording
-def start_recording(duration):
-    # Open input stream
-    stream = p.open(format=FORMAT,
-                    channels=CHANNELS,
-                    rate=RATE,
-                    input=True,
-                    frames_per_buffer=CHUNK)
+# # Define a function to start recording
+# def start_recording(duration):
+#     # Open input stream
+#     stream = p.open(format=FORMAT,
+#                     channels=CHANNELS,
+#                     rate=RATE,
+#                     input=True,
+#                     frames_per_buffer=CHUNK)
     
-    # Set output filename
-    FILENAME = "recording_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".wav"
+#     # Set output filename
+#     FILENAME = "recording_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".wav"
 
-    print("Listening...")
+#     print("Listening...")
 
-    # Flag to indicate recording
-    recording = False
+#     # Flag to indicate recording
+#     recording = False
 
-    # Set start time
-    start_time = datetime.datetime.now()
+#     # Set start time
+#     start_time = datetime.datetime.now()
 
-    try:
-        # Loop through stream and record audio
-        while datetime.datetime.now() - start_time < duration and is_recording:
-            # Read chunk of audio data
-            data = stream.read(CHUNK)
+#     try:
+#         # Loop through stream and record audio
+#         while datetime.datetime.now() - start_time < duration and is_recording:
+#             # Read chunk of audio data
+#             data = stream.read(CHUNK)
 
-            # Convert data to numpy array
-            numpydata = np.frombuffer(data, dtype=np.int16)
+#             # Convert data to numpy array
+#             numpydata = np.frombuffer(data, dtype=np.int16)
 
-            # Calculate root mean square (RMS) of audio chunk
-            rms = np.sqrt(np.mean(np.square(numpydata)))
+#             # Calculate root mean square (RMS) of audio chunk
+#             rms = np.sqrt(np.mean(np.square(numpydata)))
 
-            # Calculate decibel (dB) level
-            db = 20 * math.log10(rms)
+#             # Calculate decibel (dB) level
+#             db = 20 * math.log10(rms)
 
-            # Check if dB level exceeds threshold and start recording
-            if db > 30 and not recording:
-                print("Sound detected! dB level: ", db)
-                recording = True
+#             # Check if dB level exceeds threshold and start recording
+#             if db > 30 and not recording:
+#                 print("Sound detected! dB level: ", db)
+#                 recording = True
 
-            # Record audio data if flag is set
-            if recording:
-                frames.append(data)
+#             # Record audio data if flag is set
+#             if recording:
+#                 frames.append(data)
 
-            # Stop recording after 5 seconds
-            if len(frames) > 0 and len(frames) * CHUNK / RATE >= 5:
-                print("Sound stopped. dB level: ", db)
-                recording = False
+#             # Stop recording after 5 seconds
+#             if len(frames) > 0 and len(frames) * CHUNK / RATE >= 5:
+#                 print("Sound stopped. dB level: ", db)
+#                 recording = False
 
-    except KeyboardInterrupt:
-        print("Interrupted.")
+#     except KeyboardInterrupt:
+#         print("Interrupted.")
 
-    # Close stream
-    stream.stop_stream()
-    stream.close()
+#     # Close stream
+#     stream.stop_stream()
+#     stream.close()
 
-    # Save audio data to WAV file if frames are not empty
-    if frames:
-        wf = wave.open(FILENAME, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
-        wf.close()
+#     # Save audio data to WAV file if frames are not empty
+#     if frames:
+#         wf = wave.open(FILENAME, 'wb')
+#         wf.setnchannels(CHANNELS)
+#         wf.setsampwidth(p.get_sample_size(FORMAT))
+#         wf.setframerate(RATE)
+#         wf.writeframes(b''.join(frames))
+#         wf.close()
 
-        print("Recording saved as", FILENAME)
-    else:
-        print("No recording saved.")
+#         print("Recording saved as", FILENAME)
+#     else:
+#         print("No recording saved.")
 
-    return FILENAME
+#     return FILENAME
 
 
 def stop_recording():
@@ -1258,8 +1257,8 @@ def exam_portal(request):
 
             # Start a new thread to run the start_recording function in parallel
             is_recording = True
-            recording_thread = threading.Thread(target=start_recording, args=(datetime.timedelta(minutes=int(total_duration)),))
-            recording_thread.start()
+            # recording_thread = threading.Thread(target=start_recording, args=(datetime.timedelta(minutes=int(total_duration)),))
+            # recording_thread.start()
 
             cursor = None  # Initialize the cursor variable to None
             try:
